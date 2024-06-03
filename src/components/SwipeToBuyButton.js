@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, View, Text, Dimensions, Alert} from 'react-native';
 import {Gesture, GestureDetector} from 'react-native-gesture-handler';
 import Animated, {
@@ -8,15 +8,57 @@ import Animated, {
   withTiming,
   runOnJS,
 } from 'react-native-reanimated';
+import notifee from '@notifee/react-native';
+import {useDispatch, useSelector} from 'react-redux';
+import {clearCart} from '../store/cartSlice';
 
 const {width} = Dimensions.get('window');
 const BUTTON_WIDTH = width - 40;
-const SWIPEABLE_DIMENSIONS = 40;
+const SWIPEABLE_DIMENSIONS = 60;
 const SWIPE_THRESHOLD = BUTTON_WIDTH - SWIPEABLE_DIMENSIONS - 10;
 
 const SwipeToBuyButton = () => {
   const translateX = useSharedValue(0);
   const [confirmed, setConfirmed] = useState(false);
+
+  const dispatch = useDispatch();
+  const cartItems = useSelector(state => state.cart.items);
+
+  const onDisplayNotification = async stock => {
+    // Request permissions (required for iOS)
+    await notifee.requestPermission();
+
+    // Create a channel (required for Android)
+    const channelId = await notifee.createChannel({
+      id: 'default',
+      name: 'Default Channel',
+    });
+
+    // Display a notification
+    await notifee.displayNotification({
+      title: 'Congratulations!',
+      body: `Your Purchase order for ${stock} is completed`,
+      android: {
+        channelId,
+        // smallIcon: 'name-of-a-small-icon', // optional, defaults to 'ic_launcher'.
+        // pressAction is needed if you want the notification to open the app when pressed
+        pressAction: {
+          id: 'default',
+        },
+      },
+    });
+  };
+
+  const handlePurchaseStock = async () => {
+    cartItems?.map(item => {
+      onDisplayNotification(item?.name);
+      dispatch(clearCart());
+    });
+  };
+
+  useEffect(() => {
+    confirmed && handlePurchaseStock();
+  }, [confirmed]);
 
   const gesture = Gesture.Pan()
     .onUpdate(event => {
@@ -47,13 +89,13 @@ const SwipeToBuyButton = () => {
     <View style={styles.container}>
       {!confirmed ? (
         <>
-          <Text style={styles.text}>Swipe to Buy</Text>
           <View style={styles.button}>
             <GestureDetector gesture={gesture}>
               <Animated.View style={[styles.swipeable, animatedStyle]}>
                 <Text style={styles.swipeText}>{'>'}</Text>
               </Animated.View>
             </GestureDetector>
+            <Text style={styles.text}>Swipe to Buy</Text>
           </View>
         </>
       ) : (
@@ -70,14 +112,14 @@ const SwipeToBuyButton = () => {
 
 const styles = StyleSheet.create({
   container: {
-    justifyContent: 'center',
     alignItems: 'center',
-    flex: 1,
     backgroundColor: '#fff',
   },
   text: {
-    fontSize: 18,
-    marginBottom: 20,
+    fontSize: 24,
+    fontWeight: '600',
+    color: 'black',
+    textAlign: 'center',
   },
   button: {
     width: BUTTON_WIDTH,
@@ -90,7 +132,8 @@ const styles = StyleSheet.create({
   swipeable: {
     width: SWIPEABLE_DIMENSIONS,
     height: SWIPEABLE_DIMENSIONS,
-    backgroundColor: '#FFF8DC',
+    backgroundColor: '#FFF',
+    margin: 10,
     borderRadius: SWIPEABLE_DIMENSIONS / 2,
     position: 'absolute',
     justifyContent: 'center',
@@ -116,8 +159,9 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   confirmedText: {
-    fontSize: 18,
-    color: '#fff',
+    fontSize: 24,
+    fontWeight: '600',
+    color: 'black',
   },
   confirmedIcon: {
     width: SWIPEABLE_DIMENSIONS,
@@ -127,6 +171,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: 10,
+    position: 'absolute',
+    alignItems: 'center',
+    right: 10,
   },
   confirmedIconText: {
     fontSize: 18,

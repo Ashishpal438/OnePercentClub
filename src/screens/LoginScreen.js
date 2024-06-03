@@ -4,30 +4,41 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
+  Image,
+  Alert,
 } from 'react-native';
 import React, {useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {login} from '../store/authSlice';
 
 const LoginScreen = ({navigation}) => {
+  const dispatch = useDispatch();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSignIn = () => {
-    // Here you can implement your sign in logic
-    // if (email === 'example@email.com' && password === 'password') {
-    //   // Successful sign in
-    //   Alert.alert('Success', 'Sign in successful!');
-    // } else {
-    //   // Failed sign in
-    //   Alert.alert('Error', 'Invalid email or password');
-    // }
+    if (!email || !password) {
+      return Alert.alert('Please enter any sample text to login');
+    }
+    dispatch(login({email, password}));
     navigation.navigate('home');
   };
+
+  const handleLogout = () => {
+    dispatch(logout());
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>1 Percent Club</Text>
+      <Image
+        source={require('../../assets/logo.png')}
+        style={{width: 150, height: 150, marginBottom: 50}}
+      />
       <TextInput
         style={styles.input}
         placeholder="Email"
+        placeholderTextColor={'white'}
         value={email}
         onChangeText={setEmail}
         keyboardType="email-address"
@@ -36,6 +47,7 @@ const LoginScreen = ({navigation}) => {
       <TextInput
         style={styles.input}
         placeholder="Password"
+        placeholderTextColor={'white'}
         value={password}
         onChangeText={setPassword}
         secureTextEntry
@@ -52,7 +64,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#fff',
+    backgroundColor: '#000',
   },
   title: {
     fontSize: 24,
@@ -67,17 +79,18 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingLeft: 10,
     marginBottom: 20,
+    color: '#fff',
   },
   button: {
     width: '80%',
     height: 50,
-    backgroundColor: '#007bff',
+    backgroundColor: '#FFF5D1',
     justifyContent: 'center',
     alignItems: 'center',
     borderRadius: 10,
   },
   buttonText: {
-    color: '#fff',
+    color: '#000',
     fontSize: 18,
     fontWeight: 'bold',
   },
