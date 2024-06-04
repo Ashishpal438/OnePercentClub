@@ -1,5 +1,7 @@
 import {View, Text, Pressable, Image, TouchableOpacity} from 'react-native';
 import React, {useState} from 'react';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import IonIcon from 'react-native-vector-icons/Ionicons';
 
 const StockCard = ({item, navigation}) => {
   const [showDetails, setShowDetails] = useState(false);
@@ -51,21 +53,25 @@ const StockCard = ({item, navigation}) => {
             style={{
               flexDirection: 'row',
               alignItems: 'flex-end',
-              gap: 10,
+              gap: 8,
             }}>
             <Text style={{color: '#090909', fontSize: 24, fontWeight: 600}}>
               ${item?.price}
             </Text>
-            <Text style={{color: '#34C759', fontSize: 16, fontWeight: 600}}>
-              {item?.change_percent}%
-            </Text>
+            <View
+              style={{flexDirection: 'row', alignItems: 'flex-end', gap: 5}}>
+              <IonIcon name={'caret-up-sharp'} size={18} color={'#34C759'} />
+              <Text style={{color: '#34C759', fontSize: 16, fontWeight: 600}}>
+                {item?.change_percent}%
+              </Text>
+            </View>
           </View>
         </View>
         {showDetails && (
           <Pressable
-            style={{width: '10%'}}
+            style={{width: '10%', marginTop: 10}}
             onPress={() => setShowDetails(false)}>
-            <Text>V</Text>
+            <Icon name={'chevron-up'} size={35} color={'black'} />
           </Pressable>
         )}
       </TouchableOpacity>

@@ -4,6 +4,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import {removeItem, updateQuantity, clearCart} from '../store/cartSlice';
 import {FlatList} from 'react-native-gesture-handler';
 import SwipeToBuyButton from '../components/SwipeToBuyButton';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import IonIcon from 'react-native-vector-icons/Ionicons';
 
 const CartScreen = () => {
   const dispatch = useDispatch();
@@ -89,23 +91,33 @@ const CartScreen = () => {
                       }}>
                       ${item?.price}
                     </Text>
-                    <Text
+                    <View
                       style={{
-                        color: '#34C759',
-                        fontSize: 16,
-                        fontWeight: 600,
+                        flexDirection: 'row',
+                        alignItems: 'flex-end',
+                        gap: 5,
                       }}>
-                      {item?.change_percent}%
-                    </Text>
+                      <IonIcon
+                        name={'caret-up-sharp'}
+                        size={18}
+                        color={'#34C759'}
+                      />
+                      <Text
+                        style={{
+                          color: '#34C759',
+                          fontSize: 16,
+                          fontWeight: 600,
+                        }}>
+                        {item?.change_percent}%
+                      </Text>
+                    </View>
                   </View>
                 </View>
 
                 <Pressable
                   style={{width: '10%'}}
                   onPress={() => handleRemoveFromCart(item?.symbol)}>
-                  <Text style={{fontSize: 24, fontWeight: 600, color: 'black'}}>
-                    X
-                  </Text>
+                  <Icon name={'delete-outline'} size={25} color={'black'} />
                 </Pressable>
               </View>
             );

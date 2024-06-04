@@ -2,6 +2,7 @@ import {View, Text, StyleSheet, Image, TouchableOpacity} from 'react-native';
 import React from 'react';
 import {useDispatch} from 'react-redux';
 import {addItem} from '../store/cartSlice';
+import IonIcon from 'react-native-vector-icons/Ionicons';
 
 const StockDetailsScreen = ({navigation, route}) => {
   const {item} = route.params;
@@ -22,7 +23,16 @@ const StockDetailsScreen = ({navigation, route}) => {
         <Text style={styles.ticker}>{item?.symbol}</Text>
         <Text style={styles.company}>{item?.name}</Text>
         <Text style={styles.price}>${item?.price}</Text>
-        <Text style={styles.priceChange}>▲{item?.change_percent}%</Text>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'flex-end',
+            gap: 5,
+            marginBottom: 20,
+          }}>
+          <IonIcon name={'caret-up-sharp'} size={25} color={'#34C759'} />
+          <Text style={styles.priceChange}>{item?.change_percent}%</Text>
+        </View>
         <Text style={styles.title}>Lorem ipsum dolor</Text>
         <Text style={styles.description}>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
@@ -76,7 +86,6 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '600',
     color: '#34C759',
-    marginBottom: 20,
   },
   title: {
     fontSize: 20,
