@@ -13,9 +13,28 @@ const initialState = {
 export const fetchProducts = createAsyncThunk(
   'products/fetchProducts',
   async () => {
-    // const response = await axios.get('https://api.example.com/products'); // Replace with your endpoint
-    // return response.data;
-    return response?.data?.trends;
+    try {
+      const options = {
+        method: 'GET',
+        url: 'https://real-time-finance-data.p.rapidapi.com/market-trends',
+        params: {
+          trend_type: 'GAINERS',
+          country: 'us',
+          language: 'en',
+        },
+        headers: {
+          'X-RapidAPI-Key':
+            '5588c83eabmsh39794394fd331e5p11e2ebjsn51b547398eee',
+          'X-RapidAPI-Host': 'real-time-finance-data.p.rapidapi.com',
+        },
+      };
+      const apiResponse = await axios.request(options);
+      return apiResponse?.data?.trends;
+    } catch (error) {
+      console.error('Error fetching market trends:', error);
+      //return the statuc data if api fails
+      return response?.data?.trends;
+    }
   },
 );
 

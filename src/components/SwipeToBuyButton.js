@@ -24,7 +24,7 @@ const SwipeToBuyButton = () => {
   const dispatch = useDispatch();
   const cartItems = useSelector(state => state.cart.items);
 
-  const onDisplayNotification = async stock => {
+  const onDisplayNotification = async (stock, key) => {
     // Request permissions (required for iOS)
     await notifee.requestPermission();
 
@@ -40,24 +40,25 @@ const SwipeToBuyButton = () => {
       body: `Your Purchase order for ${stock} is completed`,
       android: {
         channelId,
-        // smallIcon: 'name-of-a-small-icon', // optional, defaults to 'ic_launcher'.
-        // pressAction is needed if you want the notification to open the app when pressed
-        pressAction: {
-          id: 'default',
-        },
+        smallIcon: 'ic_launcher',
+        sortKey: key,
       },
     });
   };
 
-  const handlePurchaseStock = async () => {
-    cartItems?.map(item => {
-      onDisplayNotification(item?.name);
-      dispatch(clearCart());
+  const handlePurchaseStock = () => {
+    cartItems?.map((item, index) => {
+      setTimeout(() => {
+        onDisplayNotification(item?.name, index.toString());
+      }, index * 1000);
     });
+    dispatch(clearCart());
   };
 
   useEffect(() => {
-    confirmed && handlePurchaseStock();
+    if (confirmed) {
+      handlePurchaseStock();
+    }
   }, [confirmed]);
 
   const gesture = Gesture.Pan()
