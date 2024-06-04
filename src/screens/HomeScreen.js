@@ -81,6 +81,7 @@ const HomeScreen = ({navigation}) => {
               value={searchText}
               placeholder="Search for stocks"
               onChangeText={text => setSearchText(text)}
+              placeholderTextColor={'#999999'}
             />
           </View>
         )}
@@ -144,6 +145,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     height: 40,
+    color: 'black',
   },
   pagination: {
     flexDirection: 'row',
@@ -155,6 +157,7 @@ const styles = StyleSheet.create({
   },
   pageText: {
     fontSize: 16,
+    color: 'black',
   },
 });
 
